@@ -1,6 +1,5 @@
 import React, { useState, useRef,useContext} from 'react';
 import TaskItem from './TaskItem';
-import CompletedItem from './CompletedTasks.js';
 import DashboardComp from './DashboardComp';
 import {TaskContext} from './TaskContext.js';
 import Link from 'next/link';
