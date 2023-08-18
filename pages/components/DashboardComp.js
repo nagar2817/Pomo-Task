@@ -72,7 +72,7 @@ const DashboardComp = ({ completedTasks, pendingTasks })=>{
   const LineChart = new Chart(lineChartCanvas, {
     type: 'line',
     data: {
-      labels: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5'],
+      labels: completedTasks.map(task=>task.title),
       datasets: [
         {
           label: 'Tomato',
@@ -93,6 +93,10 @@ const DashboardComp = ({ completedTasks, pendingTasks })=>{
   });
 
   // Scatter Plot
+  const lowPriorityTasks = completedTasks.filter((task) => task.priority === 'Low').length;
+    const mediumPriorityTasks = completedTasks.filter((task) => task.priority === 'Medium').length;
+    const highPriorityTasks = completedTasks.filter((task) => task.priority === 'High').length;
+
   const scatterPlotCanvas = document.getElementById('scatterPlot').getContext('2d');
   const SChart = new Chart(scatterPlotCanvas, {
     type: 'scatter',
@@ -100,7 +104,11 @@ const DashboardComp = ({ completedTasks, pendingTasks })=>{
       datasets: [
         {
           label: 'Tasks',
-          data: completedTasks.map((task) => ({ x: task.tomato, y: task.priority === 'low' ? 1 : task.priority === 'medium' ? 2 : 3 })),
+          data: [
+            { x: 'Low', y: lowPriorityTasks },
+            { x: 'Medium', y: mediumPriorityTasks },
+            { x: 'High', y: highPriorityTasks },
+          ],
           backgroundColor: 'rgb(75, 192, 192)',
           borderColor: 'rgb(75, 192, 192)',
           borderWidth: 1,
@@ -110,13 +118,25 @@ const DashboardComp = ({ completedTasks, pendingTasks })=>{
     options: {
       scales: {
         x: {
-          type: 'linear',
+          type: 'category',
           position: 'bottom',
+          labels: ['Low', 'Medium', 'High'],
+          scaleLabel: {
+            display: true,
+            labelString: 'Priority Level',
+          },
         },
         y: {
-          type: 'category',
+          type: 'linear',
           position: 'left',
-          labels: ['Low', 'Medium', 'High'],
+          ticks: {
+            stepSize: 1,
+            beginAtZero: true,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Number of Tasks',
+          },
         },
       },
     },
@@ -138,21 +158,21 @@ const DashboardComp = ({ completedTasks, pendingTasks })=>{
         </div>
       </div>
 
-      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Doughnut Chart</h1>
+      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Bar Chart</h1>
       <div className="w-[1100px] h-screen flex mx-auto my-auto">
         <div className='border border-gray-400 pt-0 rounded-xl w-full h-fit my-auto  shadow-xl pb-2'>
           <canvas id='barChart'></canvas>
         </div>
       </div>
 
-      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Doughnut Chart</h1>
+      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Line Chart</h1>
       <div className="w-[1100px] h-screen flex mx-auto my-auto">
         <div className='border border-gray-400 pt-0 rounded-xl w-full h-fit my-auto  shadow-xl pb-2'>
           <canvas id='lineChart'></canvas>
         </div>
       </div>
 
-      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Doughnut Chart</h1>
+      <h1 className="w-[150px] mx-auto mt-10 text-xl font-semibold capitalize ">Scatter Chart</h1>
       <div className="w-[1100px] h-screen flex mx-auto my-auto">
         <div className='border border-gray-400 pt-0 rounded-xl w-full h-fit my-auto  shadow-xl pb-2'>
           <canvas id='scatterPlot'></canvas>
