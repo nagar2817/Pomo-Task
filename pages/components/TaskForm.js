@@ -1,17 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useContext} from 'react';
 import TaskItem from './TaskItem';
 import CompletedItem from './CompletedTasks.js';
-import Tasks from '../../data.js';
+import DashboardComp from './DashboardComp';
+import {TaskContext} from './TaskContext.js';
+import Link from 'next/link';
+import CompledtedList from './CompletedList';
+
 const TaskForm = () => {
-  const [tasks, setTasks] = useState(Tasks);
+  const {tasks,setTasks,completedTasks,setCompletedTasks} = useContext(TaskContext);
   const [taskBeingEdited, setTaskBeingEdited] = useState(null);
-  const [completedTasks, setCompletedTasks] = useState([]);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const dueDateRef = useRef(null);
   const pomodoroCountRef = useRef(null);
   const priorityRef = useRef(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -65,8 +67,13 @@ const TaskForm = () => {
     setTasks(tasks.filter((t) => t !== task));
     setCompletedTasks([...completedTasks, task]);
   };
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const handleToggleCompletedTasks = () => {
     setShowCompletedTasks(!showCompletedTasks);
+  };
+  const [showDashBoard, setShowDashBoard] = useState(false);
+  const handleToggleDashboard = () => {
+    setShowDashBoard(!showDashBoard);
   };
 
   return (
@@ -114,17 +121,19 @@ const TaskForm = () => {
       <button onClick={handleToggleCompletedTasks}>
         {showCompletedTasks ? 'Hide Completed Tasks' : 'Show Completed Tasks'}
       </button>
+      <button onClick={handleToggleDashboard}>
+        {showDashBoard ? 'Hide Dashboard' : 'Show Dashboard '}
+      </button>
 
       {showCompletedTasks && (
-        <>
-          <h2>Completed Tasks</h2>
-          <ul>
-            {completedTasks.map((task, index) => (
-              <CompletedItem key={index} task={task} />
-            ))}
-          </ul>
-        </>
+        <CompledtedList tasks={completedTasks} />
       )}
+      {
+        showDashBoard && (
+        <DashboardComp completedTasks={completedTasks} pendingTasks={tasks} /> 
+        )
+      }
+
     </>
   );
 };
